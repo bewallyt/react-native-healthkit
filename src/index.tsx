@@ -71,6 +71,7 @@ const Healthkit: typeof ReactNativeHealthkit = {
     mostRecentQuantityDateInterval: undefined,
     duration: undefined,
   })),
+  queryStatisticsCollection: UnavailableFn(Promise.resolve([])),
   queryWorkouts: UnavailableFn(Promise.resolve([])),
   querySources: UnavailableFn(Promise.resolve([])),
   requestAuthorization: UnavailableFn(Promise.resolve(false)),
