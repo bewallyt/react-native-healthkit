@@ -713,7 +713,7 @@ class ReactNativeHealthkit: RCTEventEmitter {
     reject: @escaping RCTPromiseRejectBlock
   ) {
     // Check for HealthKit store availability
-    guard let store = self.healthStore else {
+    guard let store = _store else {
       return reject("INIT_ERROR", "Failed to access HealthKit store.", nil)
     }
 

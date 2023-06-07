@@ -1,8 +1,7 @@
 {
   "expo": {
     "name": "Healthkit Expo",
-    "slug": "healthkit-example-expo",
-    "owner": "react-native-healthkit",
+    "slug": "healthkit-example-expo-bewallyt",
     "version": "1.0.0",
     "scheme": "healthkit-example",
     "orientation": "portrait",
@@ -17,12 +16,10 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/f91da835-1fb0-4398-ba8f-f362cf3d3cc2"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kingstinct.healthkitexample.expo",
+      "bundleIdentifier": "com.bewallyt.healthkitexample.expo",
       "buildNumber": "3"
     },
     "web": {
@@ -32,14 +29,16 @@
       "policy": "sdkVersion"
     },
     "plugins": [
-      [ "./app.plugin",
+      [
+        "./app.plugin",
         {
           "NSHealthShareUsageDescription": "Overriden default message: This app uses HealthKit to store and sync your data"
-        } ]
+        }
+      ]
     ],
     "extra": {
       "eas": {
-        "projectId": "f91da835-1fb0-4398-ba8f-f362cf3d3cc2"
+        "projectId": "6bbdf305-5c9c-4484-b35a-1e9f72cd393d"
       }
     }
   }
