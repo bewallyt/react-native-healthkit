@@ -1350,6 +1350,16 @@ type ReactNativeHealthkitTypeNative = {
     to: string,
     options: readonly HKStatisticsOptions[]
   ) => Promise<QueryStatisticsResponseRaw<TIdentifier, TUnit>>;
+  readonly queryStatisticsCollection: <
+  TIdentifier extends HKQuantityTypeIdentifier,
+  TUnit extends UnitForIdentifier<TIdentifier>
+>(
+  identifier: HKQuantityTypeIdentifier,
+  unit: TUnit,
+  from: string,
+  to: string,
+  options: readonly HKStatisticsOptions[]
+) => Promise<QueryStatisticsResponseRaw<TIdentifier, TUnit>>;
   readonly getPreferredUnits: (
     identifiers: readonly HKQuantityTypeIdentifier[]
   ) => Promise<TypeToUnitMapping>;
