@@ -725,27 +725,13 @@ class ReactNativeHealthkit: RCTEventEmitter {
       return reject("INVALID_TYPE_IDENTIFIER", "Invalid type identifier: \(typeIdentifier)", nil)
     }
 
+    // Create predicate for the query
+    let from = dateOrNilIfZero(date: from)
+    let to = dateOrNilIfZero(date: to)
+    let predicate = createPredicate(from: from, to: to)
+
     // Create date components for the interval
     let intervalComponents = DateComponents(minute: interval)
-
-    // Set the anchor for the top of the hour.
-    var components = DateComponents(
-      calendar: calendar,
-      timeZone: calendar.timeZone,
-      hour: 0,
-      minute: 0,
-      second: 0)
-
-    guard
-      let anchorDate = calendar.nextDate(
-        after: Date(),
-        matching: components,
-        matchingPolicy: .nextTime,
-        repeatedTimePolicy: .first,
-        direction: .backward)
-    else {
-      fatalError("*** unable to find the top of the current hour. ***")
-    }
 
     var opts = HKStatisticsOptions.init()
 
@@ -782,7 +768,7 @@ class ReactNativeHealthkit: RCTEventEmitter {
     // Create the query
     let query = HKStatisticsCollectionQuery(
       quantityType: quantityType,
-      quantitySamplePredicate: nil,
+      quantitySamplePredicate: predicate,
       options: opts,
       anchorDate: anchorDate,
       intervalComponents: intervalComponents)
@@ -810,30 +796,32 @@ class ReactNativeHealthkit: RCTEventEmitter {
         }
       }
 
-      let endDate = Date()
-      let threeMonthsAgo = DateComponents(month: -3)
-
-      guard let startDate = calendar.date(byAdding: threeMonthsAgo, to: endDate) else {
-        fatalError("*** Unable to calculate the start date ***")
+      func getQuantityFromStatistics(statistics: HKStatistics, options: NSArray) -> HKQuantity? {
+        for o in options {
+          let str = o as! String
+          if str == "cumulativeSum" {
+            return statistics.sumQuantity()
+          } else if str == "discreteAverage" {
+            return statistics.averageQuantity()
+          } else if str == "discreteMax" {
+            return statistics.maximumQuantity()
+          } else if str == "discreteMin" {
+            return statistics.minimumQuantity()
+          }
+        }
+        return nil
       }
 
-      // Plot the weekly step counts over the past 3 months.
-      var weeklyData = MyWeeklyData()
-
       // Enumerate over all the statistics objects between the start and end dates.
-      statsCollection.enumerateStatistics(from: startDate, to: endDate) { (statistics, stop) in
-        if let quantity = statistics.sumQuantity() {
+      statsCollection.enumerateStatistics(from: from, to: to) { (statistics, stop) in
+        if let quantity = getQuantityFromStatistics(statistics: statistics, options: options) {
           let date = statistics.startDate
           let value = quantity.doubleValue(for: .count())
-
-          // Extract each week's data.
-          weeklyData.addWeek(date: date, stepCount: Int(value))
         }
       }
 
-      // Serialize your results into a form that can be passed back to JavaScript
-      let resultsDict = self.serializeStatsCollection(statsCollection)
-      resolve(resultsDict)
+      // TODO(Benson): Serialize your results into a form that can be passed back to JavaScript
+      resolve(resultsDict);
     }
 
     // Execute the query
