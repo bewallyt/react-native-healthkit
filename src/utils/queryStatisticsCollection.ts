@@ -7,6 +7,7 @@ import type {
   UnitForIdentifier,
 } from "../native-types";
 
+// Interval is in minutes
 async function queryStatisticsCollection<
   TIdentifier extends HKQuantityTypeIdentifier,
   TUnit extends UnitForIdentifier<TIdentifier> = UnitForIdentifier<TIdentifier>
@@ -14,7 +15,8 @@ async function queryStatisticsCollection<
   identifier: TIdentifier,
   options: readonly HKStatisticsOptions[],
   from: Date,
-  to?: Date,
+  to: Date | undefined,
+  interval: number,
   unit?: TUnit
 ) {
   const actualUnit = await ensureUnit(identifier, unit);
@@ -25,6 +27,7 @@ async function queryStatisticsCollection<
       actualUnit,
       from.toISOString(),
       toDate.toISOString(),
+      interval,
       options
     );
 

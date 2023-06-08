@@ -32,7 +32,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>exp+healthkit-example-expo</string>
+          <string>exp+healthkit-example-expo-bewallyt</string>
         </array>
       </dict>
     </array>

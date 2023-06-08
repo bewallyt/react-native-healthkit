@@ -1358,6 +1358,7 @@ type ReactNativeHealthkitTypeNative = {
   unit: TUnit,
   from: string,
   to: string,
+  interval: number,
   options: readonly HKStatisticsOptions[]
 ) => Promise<QueryStatisticsResponseRaw<TIdentifier, TUnit>>;
   readonly getPreferredUnits: (

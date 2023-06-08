@@ -22,6 +22,9 @@
       "bundleIdentifier": "com.bewallyt.healthkitexample.expo",
       "buildNumber": "3"
     },
+    "android": {
+      "package": "com.bewallyt.healthkitexample.expo"
+    },
     "web": {
       "favicon": "./assets/favicon.png"
     },

@@ -6,7 +6,7 @@
     "ios": "expo run:ios",
     "eject": "expo eject",
     "build-local": "npx eas-cli@latest build --platform=ios --profile=development --local",
-    "build-local-sim": "npx eas-cli@latest build --platform=ios --profile=development --local",
+    "build-local-sim": "npx eas-cli@latest build --platform=ios --profile=development-simulator --local",
     "build": "npx eas-cli@latest build --platform=ios --profile=development",
     "typecheck": "tsc --noEmit",
     "postinstall": "cp ../app.plugin.js ./app.plugin.js",
