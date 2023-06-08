@@ -202,6 +202,7 @@ RCT_EXTERN_METHOD(queryStatisticsCollection:(NSString)typeIdentifier
                   from:(NSDate)from
                   to:(NSDate)to
                   interval:(NSInteger)interval
+                  anchorDate:(NSDate)anchorDate
                   options:(NSArray)options
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)

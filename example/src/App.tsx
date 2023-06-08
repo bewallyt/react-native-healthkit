@@ -171,6 +171,12 @@ const StatisticsCollectionListItem: React.FC<{
       [icon]
     );
 
+  let anchorDate = new Date(); // Creates a new Date object for the current time
+  anchorDate.setHours(0);
+  anchorDate.setMinutes(0);
+  anchorDate.setSeconds(0);
+  anchorDate.setMilliseconds(0);
+
   useEffect(() => {
     async function getData() {
       const data = await Healthkit.queryStatisticsCollection(
@@ -179,6 +185,7 @@ const StatisticsCollectionListItem: React.FC<{
         dayjs().startOf("day").toDate(),
         undefined,
         60,
+        anchorDate,
         unit
       );
       console.log(data);
@@ -741,7 +748,7 @@ const App = () => {
                 unit={e.unit}
               />
             ))}
-          </List.Accordion> 
+          </List.Accordion>
 
           <List.Accordion title="Sources" id="3">
             {SOURCES_TO_SHOW.map((e) => (

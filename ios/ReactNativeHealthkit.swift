@@ -706,10 +706,10 @@ class ReactNativeHealthkit: RCTEventEmitter {
     store.execute(query)
   }
 
-  @objc(queryStatisticsCollection:unitString:from:to:interval:options:resolve:reject:)
+  @objc(queryStatisticsCollection:unitString:from:to:interval:anchorDate:options:resolve:reject:)
   func queryStatisticsCollection(
     typeIdentifier: String, unitString: String, from: Date, to: Date, interval: Int,
-    options: NSArray, resolve: @escaping RCTPromiseResolveBlock,
+    anchorDate: Date, options: NSArray, resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) {
     // Check for HealthKit store availability
@@ -728,19 +728,113 @@ class ReactNativeHealthkit: RCTEventEmitter {
     // Create date components for the interval
     let intervalComponents = DateComponents(minute: interval)
 
-    // Prepare options
-    var statisticsOptions: HKStatisticsOptions = []
-    // Add options based on the options array
+    // Set the anchor for the top of the hour.
+    var components = DateComponents(
+      calendar: calendar,
+      timeZone: calendar.timeZone,
+      hour: 0,
+      minute: 0,
+      second: 0)
+
+    guard
+      let anchorDate = calendar.nextDate(
+        after: Date(),
+        matching: components,
+        matchingPolicy: .nextTime,
+        repeatedTimePolicy: .first,
+        direction: .backward)
+    else {
+      fatalError("*** unable to find the top of the current hour. ***")
+    }
+
+    var opts = HKStatisticsOptions.init()
+
+    for o in options {
+      let str = o as! String
+      if str == "cumulativeSum" {
+        opts.insert(HKStatisticsOptions.cumulativeSum)
+      } else if str == "discreteAverage" {
+        opts.insert(HKStatisticsOptions.discreteAverage)
+      } else if str == "discreteMax" {
+        opts.insert(HKStatisticsOptions.discreteMax)
+      } else if str == "discreteMin" {
+        opts.insert(HKStatisticsOptions.discreteMin)
+      }
+      if #available(iOS 12, *) {
+        if str == "discreteMostRecent" {
+          opts.insert(HKStatisticsOptions.discreteMostRecent)
+        }
+      }
+      if #available(iOS 13, *) {
+        if str == "duration" {
+          opts.insert(HKStatisticsOptions.duration)
+        }
+        if str == "mostRecent" {
+          opts.insert(HKStatisticsOptions.mostRecent)
+        }
+      }
+
+      if str == "separateBySource" {
+        opts.insert(HKStatisticsOptions.separateBySource)
+      }
+    }
 
     // Create the query
     let query = HKStatisticsCollectionQuery(
       quantityType: quantityType,
       quantitySamplePredicate: nil,
-      options: statisticsOptions,
-      anchorDate: from,
+      options: opts,
+      anchorDate: anchorDate,
       intervalComponents: intervalComponents)
 
     // Define the initial results and statistics update handlers
+    query.initialResultsHandler = {
+      query, results, error in
+
+      guard let statsCollection = results else {
+        // Handle any errors here.
+        reject("RESULTS_ERROR", "Failed to fetch results", error)
+        return
+      }
+
+      if let error = error as? HKError {
+        switch error.code {
+        case .errorDatabaseInaccessible:
+          // HealthKit couldn't access the database because the device is locked.
+          reject("RESULTS_ERROR", "could not access database because device is locked.", error)
+          return
+        default:
+          // Handle other HealthKit errors here.
+          reject("RESULTS_ERROR", error)
+          return
+        }
+      }
+
+      let endDate = Date()
+      let threeMonthsAgo = DateComponents(month: -3)
+
+      guard let startDate = calendar.date(byAdding: threeMonthsAgo, to: endDate) else {
+        fatalError("*** Unable to calculate the start date ***")
+      }
+
+      // Plot the weekly step counts over the past 3 months.
+      var weeklyData = MyWeeklyData()
+
+      // Enumerate over all the statistics objects between the start and end dates.
+      statsCollection.enumerateStatistics(from: startDate, to: endDate) { (statistics, stop) in
+        if let quantity = statistics.sumQuantity() {
+          let date = statistics.startDate
+          let value = quantity.doubleValue(for: .count())
+
+          // Extract each week's data.
+          weeklyData.addWeek(date: date, stepCount: Int(value))
+        }
+      }
+
+      // Serialize your results into a form that can be passed back to JavaScript
+      let resultsDict = self.serializeStatsCollection(statsCollection)
+      resolve(resultsDict)
+    }
 
     // Execute the query
     store.execute(query)

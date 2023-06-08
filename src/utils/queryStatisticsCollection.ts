@@ -17,6 +17,7 @@ async function queryStatisticsCollection<
   from: Date,
   to: Date | undefined,
   interval: number,
+  anchorDate: Date,
   unit?: TUnit
 ) {
   const actualUnit = await ensureUnit(identifier, unit);
@@ -28,6 +29,7 @@ async function queryStatisticsCollection<
       from.toISOString(),
       toDate.toISOString(),
       interval,
+      anchorDate.toISOString(),
       options
     );
 
