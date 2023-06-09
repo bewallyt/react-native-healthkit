@@ -22,30 +22,17 @@ async function queryStatisticsCollection<
 ) {
   const actualUnit = await ensureUnit(identifier, unit);
   const toDate = to || new Date();
-  const { mostRecentQuantityDateInterval, ...rawResponse } =
-    await Native.queryStatisticsCollection(
-      identifier,
-      actualUnit,
-      from.toISOString(),
-      toDate.toISOString(),
-      interval,
-      anchorDate.toISOString(),
-      options
-    );
+  const statisticsDataPoints = await Native.queryStatisticsCollection(
+    identifier,
+    actualUnit,
+    from.toISOString(),
+    toDate.toISOString(),
+    interval,
+    anchorDate.toISOString(),
+    options
+  );
 
-  const response = {
-    ...rawResponse,
-    ...(mostRecentQuantityDateInterval
-      ? {
-          mostRecentQuantityDateInterval: {
-            from: new Date(mostRecentQuantityDateInterval.from),
-            to: new Date(mostRecentQuantityDateInterval.to),
-          },
-        }
-      : {}),
-  };
-
-  return response;
+  return statisticsDataPoints;
 }
 
 export default queryStatisticsCollection;

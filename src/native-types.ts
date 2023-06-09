@@ -1188,6 +1188,12 @@ export type WorkoutRoute = {
   readonly HKMetadataKeySyncVersion?: number;
 };
 
+export type StatisticsDataPoint = {
+  date: string;
+  value: number;
+  unit: string;
+}
+
 type ReactNativeHealthkitTypeNative = {
   isHealthDataAvailable(): Promise<boolean>;
   canAccessProtectedData(): Promise<boolean>;
@@ -1361,7 +1367,7 @@ type ReactNativeHealthkitTypeNative = {
   interval: number,
   anchorDate: string,
   options: readonly HKStatisticsOptions[]
-) => Promise<QueryStatisticsResponseRaw<TIdentifier, TUnit>>;
+) => Promise<StatisticsDataPoint[]>;
   readonly getPreferredUnits: (
     identifiers: readonly HKQuantityTypeIdentifier[]
   ) => Promise<TypeToUnitMapping>;

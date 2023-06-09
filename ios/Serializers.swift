@@ -40,6 +40,34 @@ func serializeQuantitySample(sample: HKQuantitySample, unit: HKUnit) -> NSDictio
   ]
 }
 
+func getQuantityFromStatistics(statistics: HKStatistics, options: NSArray) -> HKQuantity? {
+  for o in options {
+    let str = o as! String
+    if str == "cumulativeSum" {
+      return statistics.sumQuantity()
+    } else if str == "discreteAverage" {
+      return statistics.averageQuantity()
+    } else if str == "discreteMax" {
+      return statistics.maximumQuantity()
+    } else if str == "discreteMin" {
+      return statistics.minimumQuantity()
+    }
+  }
+  return nil
+}
+
+func serializeDataPoint(statistics: HKStatistics, options: NSArray) -> [String: Any]? {
+  if let quantity = getQuantityFromStatistics(statistics: statistics, options: options) {
+    let date = _dateFormatter.string(from: statistics.startDate)
+    let value = quantity.doubleValue(for: .count())
+
+    // Create a dictionary for the data point
+    let dataPoint: [String: Any] = ["date": date, "value": value, "unit": "count"]
+    return dataPoint
+  }
+  return nil
+}
+
 func serializeStatsCollection(_ statsCollection: HKStatisticsCollection) -> [String: Any] {
   var serializedCollection: [[String: Any]] = []
 

@@ -795,33 +795,14 @@ class ReactNativeHealthkit: RCTEventEmitter {
           return
         }
       }
-
-      func getQuantityFromStatistics(statistics: HKStatistics, options: NSArray) -> HKQuantity? {
-        for o in options {
-          let str = o as! String
-          if str == "cumulativeSum" {
-            return statistics.sumQuantity()
-          } else if str == "discreteAverage" {
-            return statistics.averageQuantity()
-          } else if str == "discreteMax" {
-            return statistics.maximumQuantity()
-          } else if str == "discreteMin" {
-            return statistics.minimumQuantity()
-          }
-        }
-        return nil
-      }
-
+      var resultData: [[String: Any]] = []
       // Enumerate over all the statistics objects between the start and end dates.
       statsCollection.enumerateStatistics(from: from, to: to) { (statistics, stop) in
-        if let quantity = getQuantityFromStatistics(statistics: statistics, options: options) {
-          let date = statistics.startDate
-          let value = quantity.doubleValue(for: .count())
+        if let dataPoint = serializeDataPoint(statistics: statistics, options: options) {
+          resultData.append(dataPoint)
         }
       }
-
-      // TODO(Benson): Serialize your results into a form that can be passed back to JavaScript
-      resolve(resultsDict);
+      resolve(resultData);
     }
 
     // Execute the query
