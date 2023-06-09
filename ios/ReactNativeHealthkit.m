@@ -205,7 +205,8 @@ RCT_EXTERN_METHOD(queryStatisticsCollection:(NSString)typeIdentifier
                   anchorDate:(NSDate)anchorDate
                   options:(NSArray)options
                   resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+                  reject:(RCTPromiseRejectBlock)reject
+)
 
 
 RCT_EXTERN_METHOD(getWheelchairUse:(RCTPromiseResolveBlock)resolve

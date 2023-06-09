@@ -39,6 +39,8 @@ elsif podfile_properties.key?('ios.flipper') then
 end
 
 target 'HealthkitExpo' do
+  pod 'kingstinct-react-native-healthkit', :path => '../../' # adjust the path based on your project's structure
+
   use_expo_modules!
   config = use_native_modules!
 

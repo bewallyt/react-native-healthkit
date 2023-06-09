@@ -183,7 +183,7 @@ const StatisticsCollectionListItem: React.FC<{
         identifier,
         [option],
         dayjs().startOf("day").toDate(),
-        undefined,
+        dayjs().endOf("day").toDate(),
         60,
         anchorDate,
         unit

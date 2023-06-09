@@ -791,18 +791,18 @@ class ReactNativeHealthkit: RCTEventEmitter {
           return
         default:
           // Handle other HealthKit errors here.
-          reject("RESULTS_ERROR", error)
+          reject("RESULTS_ERROR", "other error", error)
           return
         }
       }
       var resultData: [[String: Any]] = []
       // Enumerate over all the statistics objects between the start and end dates.
-      statsCollection.enumerateStatistics(from: from, to: to) { (statistics, stop) in
+      statsCollection.enumerateStatistics(from: from!, to: to!) { (statistics, stop) in
         if let dataPoint = serializeDataPoint(statistics: statistics, options: options) {
           resultData.append(dataPoint)
         }
       }
-      resolve(resultData);
+      resolve(resultData)
     }
 
     // Execute the query

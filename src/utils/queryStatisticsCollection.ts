@@ -31,7 +31,6 @@ async function queryStatisticsCollection<
     anchorDate.toISOString(),
     options
   );
-
   return statisticsDataPoints;
 }
 
