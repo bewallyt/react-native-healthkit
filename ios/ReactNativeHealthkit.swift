@@ -772,6 +772,8 @@ class ReactNativeHealthkit: RCTEventEmitter {
       options: opts,
       anchorDate: anchorDate,
       intervalComponents: intervalComponents)
+    
+    let unit = HKUnit(from: unitString)
 
     // Define the initial results and statistics update handlers
     query.initialResultsHandler = {
@@ -798,8 +800,8 @@ class ReactNativeHealthkit: RCTEventEmitter {
       var resultData: [[String: Any]] = []
       // Enumerate over all the statistics objects between the start and end dates.
       statsCollection.enumerateStatistics(from: from!, to: to!) { (statistics, stop) in
-        if let dataPoint = serializeDataPoint(statistics: statistics, options: options) {
-          resultData.append(dataPoint)
+        if let dataPoint = serializeDataPoint(statistics: statistics, options: options, unit: unit) {
+            resultData.append(dataPoint)
         }
       }
       resolve(resultData)
@@ -815,6 +817,7 @@ class ReactNativeHealthkit: RCTEventEmitter {
     ascending: Bool, resolve: @escaping RCTPromiseResolveBlock,
     reject: @escaping RCTPromiseRejectBlock
   ) {
+
     guard let store = _store else {
       return reject(INIT_ERROR, INIT_ERROR_MESSAGE, nil)
     }

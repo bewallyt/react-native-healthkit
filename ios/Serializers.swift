@@ -56,17 +56,19 @@ func getQuantityFromStatistics(statistics: HKStatistics, options: NSArray) -> HK
   return nil
 }
 
-func serializeDataPoint(statistics: HKStatistics, options: NSArray) -> [String: Any]? {
+func serializeDataPoint(statistics: HKStatistics, options: NSArray, unit: HKUnit) -> [String: Any]? {
   if let quantity = getQuantityFromStatistics(statistics: statistics, options: options) {
-    let date = _dateFormatter.string(from: statistics.startDate)
-    let value = quantity.doubleValue(for: .count())
+    let startDate = _dateFormatter.string(from: statistics.startDate)
+    let endDate = _dateFormatter.string(from: statistics.endDate)
+    let value = quantity.doubleValue(for: unit)
 
     // Create a dictionary for the data point
-    let dataPoint: [String: Any] = ["date": date, "value": value, "unit": "count"]
+    let dataPoint: [String: Any] = ["startDate": startDate, "endDate": endDate, "value": value, "unit": unit.unitString, "quantityType": statistics.quantityType.identifier]
     return dataPoint
   }
   return nil
 }
+
 
 func serializeStatsCollection(_ statsCollection: HKStatisticsCollection) -> [String: Any] {
   var serializedCollection: [[String: Any]] = []

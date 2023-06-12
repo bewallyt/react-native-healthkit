@@ -188,7 +188,7 @@ const StatisticsCollectionListItem: React.FC<{
         anchorDate,
         unit
       );
-      console.log(data);
+      console.log('this is the resolved data!', data);
     }
     getData();
   }, []);
