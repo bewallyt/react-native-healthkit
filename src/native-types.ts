@@ -1189,9 +1189,11 @@ export type WorkoutRoute = {
 };
 
 export type StatisticsDataPoint = {
-  date: string;
   value: number;
-  unit: string;
+  unit: HKUnit;
+  quantityType: HKQuantityTypeIdentifier;
+  startDate: string;
+  endDate: string;
 }
 
 type ReactNativeHealthkitTypeNative = {

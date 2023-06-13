@@ -4,6 +4,7 @@ import Native from "../native-types";
 import type {
   HKQuantityTypeIdentifier,
   HKStatisticsOptions,
+  StatisticsDataPoint,
   UnitForIdentifier,
 } from "../native-types";
 
@@ -19,7 +20,7 @@ async function queryStatisticsCollection<
   interval: number,
   anchorDate: Date,
   unit?: TUnit
-) {
+): Promise<StatisticsDataPoint[]> {
   const actualUnit = await ensureUnit(identifier, unit);
   const toDate = to || new Date();
   const statisticsDataPoints = await Native.queryStatisticsCollection(
