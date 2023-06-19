@@ -781,7 +781,7 @@ class ReactNativeHealthkit: RCTEventEmitter {
 
       guard let statsCollection = results else {
         // Handle any errors here.
-        reject("RESULTS_ERROR", "Failed to fetch results", error)
+          reject("RESULTS_ERROR", "Failed to fetch results: \(error?.localizedDescription)", error)
         return
       }
 
